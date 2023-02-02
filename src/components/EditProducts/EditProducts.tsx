@@ -59,9 +59,13 @@ function EditProducts() {
             >
                 <div className="wrapper">
                     <div ref={basicRef}><BasicInfo data={data && data?.data?.rows} /></div>
+                    <hr />
                     <div ref={attributeRef}><AttributeMapping data={data && data?.data?.rows} /></div>
+                    <hr />
                     <div ref={imageRef}><ImagenVideo data={data && data?.data?.rows} /></div>
+                    <hr />
                     <div ref={shippingRef}><ShippingInfo data={data && data?.data?.rows} reference={variationsRef} /></div>
+                    <hr />
                     <div ref={variationsRef}><Variations data={data && data?.data?.rows} /></div>
                 </div>
             </Tabs>
