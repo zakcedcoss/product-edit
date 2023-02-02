@@ -18,8 +18,6 @@ function Variations({ data }: any) {
     const [barcode, setBarcode] = useState<{ prev: string, now: string }[]>([])
     const [isEditing, setIsEditing] = useState<{ price: boolean, barcode: boolean }[]>([])
 
-    console.log(isEditing, "eee");
-
     const columns = [
         {
             align: 'left',
@@ -60,7 +58,7 @@ function Variations({ data }: any) {
                                 })
                             })} />
                         </FlexLayout>
-                        : <FlexLayout spacing="tight" valign="center" wrap="noWrap">
+                        : <FlexLayout spacing="tight" valign="center" halign="center" wrap="noWrap">
                             <TextStyles fontweight="light">{price?.[i]?.now}</TextStyles>
                             <Edit2 size={16} onClick={() => {
                                 setIsEditing(prev => {
@@ -105,7 +103,7 @@ function Variations({ data }: any) {
                                 })
                             })} />
                         </FlexLayout>
-                        : <FlexLayout spacing="tight" valign="center" halign="end" wrap="noWrap">
+                        : <FlexLayout spacing="tight" valign="center" halign="center" wrap="noWrap">
                             <TextStyles fontweight="light">{barcode?.[i]?.now}</TextStyles>
                             <Edit2 size={16}
                                 onClick={() => {
