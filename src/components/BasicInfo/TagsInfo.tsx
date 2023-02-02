@@ -38,7 +38,7 @@ function TagsInfo({ tags }: any) {
             {/*  accepted tags */}
             <FlexLayout valign='center' spacing='tight'>
                 <TextStyles>Accepted Tags</TextStyles>
-                <ToolTip open helpText="Maximum 10 tags are allowed, and each tag have a maxiumum 15 characters limit" popoverContainer="body" position="right" type="light">
+                <ToolTip open={false} helpText="Maximum 10 tags are allowed, and each tag have a maxiumum 15 characters limit" popoverContainer="body" position="right" type="light">
                     <Button type='Plain' icon={<Info size={16} />} thickness="thin"></Button>
                 </ToolTip>
             </FlexLayout>
@@ -61,7 +61,7 @@ function TagsInfo({ tags }: any) {
             {/* unaccepted tags */}
             <FlexLayout valign='center' spacing='tight'>
                 <TextStyles>Un-Accepted Tags</TextStyles>
-                <ToolTip open helpText="These tags are either more than 15 characters, or limit for max 10 acceptable tags has reached" popoverContainer="body" position="right" type="light">
+                <ToolTip open={false} helpText="These tags are either more than 15 characters, or limit for max 10 acceptable tags has reached" popoverContainer="body" position="right" type="light">
                     <Button type='Plain' icon={<Info size={16} />} thickness="extraThin"></Button>
                 </ToolTip>
             </FlexLayout>
