@@ -1,7 +1,6 @@
 import { Button, Card, CheckBox, FlexLayout, Grid, Modal, Switcher, TextField, TextStyles, ToolTip } from "@cedcommerce/ounce-ui"
 import { useEffect, useState } from "react"
 import { Check, Edit2, Info, RefreshCcw } from "react-feather"
-import GridEditor from "./GridEditor"
 
 function Variations({ data }: any) {
     const dataSource = data && data?.slice(1)?.map((d: any) => {
