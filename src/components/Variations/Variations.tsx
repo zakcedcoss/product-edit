@@ -1,6 +1,6 @@
-import { Card, FlexLayout, Grid, TextField, TextStyles } from "@cedcommerce/ounce-ui"
+import { Button, Card, CheckBox, FlexLayout, Grid, Modal, Switcher, TextField, TextStyles, ToolTip } from "@cedcommerce/ounce-ui"
 import { useEffect, useState } from "react"
-import { Check, Edit2, RefreshCcw } from "react-feather"
+import { Check, Edit2, Info, RefreshCcw } from "react-feather"
 import GridEditor from "./GridEditor"
 
 function Variations({ data }: any) {
@@ -17,6 +17,8 @@ function Variations({ data }: any) {
     const [price, setPrice] = useState<{ prev: string, now: string }[]>([])
     const [barcode, setBarcode] = useState<{ prev: string, now: string }[]>([])
     const [isEditing, setIsEditing] = useState<{ price: boolean, barcode: boolean }[]>([])
+    const [variantSwitcher, setVariantSwitcher] = useState(-1);
+    const [isModalBoxChecked, setIsModalBoxChecked] = useState(false);
 
     const columns = [
         {
@@ -126,7 +128,27 @@ function Variations({ data }: any) {
                     }
                 </>
             }
-        }
+        },
+        {
+            align: 'center',
+            dataIndex: 'ignore_variant',
+            key: 'ignore_variant',
+            title: <FlexLayout valign="center">
+                <TextStyles>Ignore Variant</TextStyles>
+                <ToolTip
+                    open={false}
+                    helpText="Let's you select the variants that you don't want to be published on Michaels."
+                    popoverContainer="body"
+                    position="left" type="dark">
+                    <Button icon={<Info size={16} />} type="Plain" thickness="thin" />
+                </ToolTip>
+            </FlexLayout>,
+            width: 180,
+            render: (_: any, __: any, i: number) => {
+                return <FlexLayout halign="center" valign="center"><Switcher checked={variantSwitcher === i} onChange={() => setVariantSwitcher(i)} /></FlexLayout>
+            }
+        },
+
     ]
 
     useEffect(() => {
@@ -152,6 +174,24 @@ function Variations({ data }: any) {
                 dataSource={dataSource}
                 scrollX={600}
             />
+            <Modal
+                open={variantSwitcher > -1}
+                close={() => {
+                    setVariantSwitcher(-1)
+                }}
+                heading="This variant is active on Michaels"
+                modalSize="small"
+                primaryAction={{
+                    content: 'Confirm',
+                    onClick: () => {
+                        setVariantSwitcher(-1)
+                    }
+                }}>
+                <FlexLayout spacing="tight">
+                    <TextStyles>This variant is uploaded on Michaels, ignoring it might lead to the variant getting removed from the marketplace.</TextStyles>
+                    <CheckBox checked={isModalBoxChecked} labelVal="Don't show again" onClick={() => setIsModalBoxChecked(prev => !prev)} />
+                </FlexLayout>
+            </Modal>
         </Card>
     )
 }

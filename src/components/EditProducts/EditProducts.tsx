@@ -4,6 +4,7 @@ import { Box, Image, Info, Map, Truck } from 'react-feather'
 import useGetProducts from '../../requests/useGetProducts';
 import AttributeMapping from '../AttributeMapping/AttributeMapping';
 import BasicInfo from '../BasicInfo/BasicInfo';
+import useIntersection from '../hooks/useIntersection';
 import ImagenVideo from '../ImagenVideo/ImagenVideo';
 import ShippingInfo from '../ShippingInfo/ShippingInfo';
 import Variations from '../Variations/Variations';
@@ -16,6 +17,11 @@ function EditProducts() {
     const shippingRef = useRef(null);
     const variationsRef = useRef(null);
     const [selectedTab, setSelectedTab] = useState("basic");
+    const inViewPortBasic = useIntersection(basicRef, "0px");
+    const inViewPortAttribute = useIntersection(attributeRef, "0px");
+    const inViewPortImage = useIntersection(imageRef, "0px");
+    const inViewPortShipping = useIntersection(shippingRef, "-0px");
+    const inViewPortVariations = useIntersection(variationsRef, "0px");
 
     const refObject: any = {
         "basic": basicRef,
@@ -23,6 +29,14 @@ function EditProducts() {
         "image": imageRef,
         "shipping": shippingRef,
         "variations": variationsRef
+    }
+
+    const handleScroll = () => {
+        if (inViewPortBasic) setSelectedTab("basic")
+        if (inViewPortAttribute) setSelectedTab("attribute")
+        if (inViewPortImage) setSelectedTab("image")
+        if (inViewPortShipping) setSelectedTab("shipping")
+        if (inViewPortVariations) setSelectedTab("variations")
     }
 
     return (
@@ -57,7 +71,7 @@ function EditProducts() {
                     },
                 ]}
             >
-                <div className="wrapper">
+                <div className="wrapper" onScroll={handleScroll}>
                     <div ref={basicRef}><BasicInfo data={data && data?.data?.rows} /></div>
                     <hr />
                     <div ref={attributeRef}><AttributeMapping data={data && data?.data?.rows} /></div>
