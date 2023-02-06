@@ -9,14 +9,17 @@ function Variations({ data }: any) {
             variant_title: d.variant_title,
             image_url: (d.edited.main_image || d.edited.variant_image) ?? (d.main_image || d.variant_image),
             price: (d.edited.price ?? d.price),
-            barcode: d.edited.barcode ?? d.barcode
+            barcode: d.edited.barcode ?? d.barcode,
+            variant_ignore: d.edited.variant_ignore ?? d.variant_ignore ?? false
         }
     })
 
     const [price, setPrice] = useState<{ prev: string, now: string }[]>([])
     const [barcode, setBarcode] = useState<{ prev: string, now: string }[]>([])
     const [isEditing, setIsEditing] = useState<{ price: boolean, barcode: boolean }[]>([])
-    const [variantSwitcher, setVariantSwitcher] = useState(-1);
+    const [variantSwitcher, setVariantSwitcher] = useState<boolean[]>([]);
+    const [variantIndex, setVariantIndex] = useState(-1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalBoxChecked, setIsModalBoxChecked] = useState(false);
 
     const columns = [
@@ -144,7 +147,19 @@ function Variations({ data }: any) {
             </FlexLayout>,
             width: 180,
             render: (_: any, __: any, i: number) => {
-                return <FlexLayout halign="center" valign="center"><Switcher checked={variantSwitcher === i} onChange={() => setVariantSwitcher(i)} /></FlexLayout>
+                return <FlexLayout halign="center" valign="center">
+                    <Switcher checked={variantSwitcher[i]} onChange={() => {
+                        setVariantIndex(i);
+                        setVariantSwitcher(prev => {
+                            return prev.map((d: boolean, idx: number) => {
+                                if (idx === i) return !d;
+                                return d;
+                            })
+                        })
+                        if (!variantSwitcher[i]) {
+                            setIsModalOpen(true);
+                        }
+                    }} /></FlexLayout>
             }
         },
 
@@ -164,8 +179,13 @@ function Variations({ data }: any) {
                 return { price: false, barcode: false }
             })
             setIsEditing(allEdited)
+            const allSwitcher = dataSource.map((d: any) => {
+                return d.variant_ignore
+            })
+            setVariantSwitcher(allSwitcher);
         }
     }, [data])
+
     return (
         <Card title="Variations" cardType="Subdued">
             <Grid
@@ -174,16 +194,28 @@ function Variations({ data }: any) {
                 scrollX={600}
             />
             <Modal
-                open={variantSwitcher > -1}
+                open={isModalOpen}
                 close={() => {
-                    setVariantSwitcher(-1)
+                    setIsModalOpen(false);
+                    setVariantSwitcher(prev => {
+                        return prev.map((d: boolean, idx: number) => {
+                            if (idx === variantIndex) return false;
+                            return d;
+                        })
+                    })
                 }}
                 heading="This variant is active on Michaels"
                 modalSize="small"
                 primaryAction={{
                     content: 'Confirm',
                     onClick: () => {
-                        setVariantSwitcher(-1)
+                        setIsModalOpen(false);
+                        setVariantSwitcher(prev => {
+                            return prev.map((d: boolean, idx: number) => {
+                                if (idx === variantIndex) return true;
+                                return d;
+                            })
+                        })
                     }
                 }}>
                 <FlexLayout spacing="tight">

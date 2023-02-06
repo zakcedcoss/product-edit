@@ -16,6 +16,8 @@ function ImageComponent({ data }: any) {
     // console.log(imagesLink, "links");
     const [toggleReorder, setToggleReorder] = useState(false);
     const [isHelpAccordianOpen, setIsHelpAccordianOpen] = useState(false);
+    const [fetchImageLink, setFetchImageLink] = useState("");
+    const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
         const allImagesLink = data?.map((d: any) => {
@@ -66,9 +68,17 @@ function ImageComponent({ data }: any) {
         setImagesLink((array) => arrayMoveImmutable(array, oldIndex, newIndex));
     };
 
+    function isImgUrl(url: string) {
+        const img = new Image();
+        img.src = url;
+        return new Promise((resolve) => {
+            img.onerror = () => resolve(false);
+            img.onload = () => resolve(true);
+        });
+    }
+
     return (
         <Card cardType='Bordered'>
-            {/* <input type="file" multiple onChange={e => console.log(e.target.files, "test")} /> */}
             <FlexLayout direction='vertical' spacing='tight'>
                 <FlexLayout halign='fill' valign='center' wrap='noWrap'>
                     <FlexLayout direction='vertical' valign='start' halign='center'>
@@ -91,9 +101,23 @@ function ImageComponent({ data }: any) {
                     }
                 </FlexLayout>
                 <FlexLayout spacing='tight' valign='center'>
-                    <TextField thickness='thin' placeHolder='Enter Image Url' />
-                    <Button>Fetch</Button>
+                    <TextField thickness='thin' placeHolder='Enter Image Url' onChange={(e) => setFetchImageLink(e)} />
+                    <Button onClick={() => {
+                        setFetchImageLink("");
+                        isImgUrl(fetchImageLink)
+                            .then(resp => {
+                                if (resp) {
+                                    setImagesLink((prev: any) => {
+                                        return [...prev, { url: fetchImageLink, caption: Math.floor(Math.random() * 87466997).toString() }]
+                                    })
+                                    setErrorMessage("")
+                                } else {
+                                    setErrorMessage("Image URL does not exist")
+                                }
+                            })
+                    }}>Fetch</Button>
                 </FlexLayout>
+                {errorMessage.trim() !== "" && <TextStyles textcolor='negative'>{errorMessage}</TextStyles>}
                 {/* images reorder */}
                 {!toggleReorder ?
                     <FlexLayout spacing='tight' valign='center'>
@@ -112,9 +136,8 @@ function ImageComponent({ data }: any) {
                             name="Avtar"
                             uploadbutton
                             multiple
-                            action="https://connector-dev.demo.cedcommerce.com/home-connector/public/michaelhome/product/uploadImage"
                             onChange={(e: any) => {
-                                uploadImage(e)
+                                // uploadImage(e)
                             }}
                         />
                     </FlexLayout> :
