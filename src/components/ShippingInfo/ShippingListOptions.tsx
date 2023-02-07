@@ -1,8 +1,8 @@
 import { Accordion, Card, CheckBox, ChoiceList, FlexLayout, List, Select, Switcher, TextArea, TextField, TextStyles, ToolTip } from '@cedcommerce/ounce-ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Info, Zap } from 'react-feather';
 
-function ShippingListOptions({ listOptions, objKey, setListOptions }: any) {
+function ShippingListOptions({ listOptions, objKey, setListOptions, editedData, setEditedData }: any) {
     const restrictionHelpText = "Most items can be shipped to Alaska, Hawaii, and Puerto Rico; however, certain restrictions may apply which include: Dimensional shipping limits - standard shipping to these regions is limited by the overall shipping size which includes a maximum length or girth of 108 inches and a maximum weight of 70 lbs. Large and/or oddly-shaped items may not be eligible for shipping. Hazmat - certain hazmat items (including but not limited to lithium batteries) are restricted from shipping to these areas. Address type - certain address types preclude shipping speeds, due to carrier capabilities.";
     const returnOptions = [
         { label: "No returns (Not Recommed=nded)", value: "no" },
@@ -26,6 +26,12 @@ function ShippingListOptions({ listOptions, objKey, setListOptions }: any) {
     const [returnChecked, setReturnChecked] = useState(true);
     const [returnSelect, setReturnSelect] = useState("30");
     const [hazardSelect, setHazardSelect] = useState<string[]>([]);
+
+    useEffect(() => {
+        setEditedData((prev: any) => {
+            return { ...prev, shippingInfo: { ...prev.shippingInfo, shippingOptions: { rateTexts, rateChecked, returnChecked, hazardSelect, returnSelect } } }
+        })
+    }, [rateTexts, rateChecked, returnChecked, hazardSelect, returnSelect])
     return (
         <FlexLayout direction='vertical' spacing='tight'>
             <FlexLayout valign='center' halign='fill' wrap='noWrap'>

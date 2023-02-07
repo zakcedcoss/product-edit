@@ -1,13 +1,24 @@
 import { CheckBox, FlexLayout, Select } from "@cedcommerce/ounce-ui"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RefreshCcw } from "react-feather"
 
-function AttribSelect({ mappedData, mapping, required, displayName, availableValues }: any) {
+function AttribSelect({ mappedData, mapping, required, displayName, availableValues, productAttribData, setProductAttribData }: any) {
     const options = mapping ? mappedData.attr : availableValues?.map((val: any) => {
         return { label: val, value: val }
     });
 
     const [selectedVal, setSelectedVal] = useState(required ? options[0].value : "");
+
+    useEffect(() => {
+        if (selectedVal !== "") {
+            setProductAttribData((prev: any) => {
+                return { ...prev, [displayName]: selectedVal }
+            })
+        } else {
+            const { [displayName]: _, ...rest } = productAttribData;
+            setProductAttribData(rest);
+        }
+    }, [selectedVal])
 
     return (
         <FlexLayout valign="center" halign="fill" desktopWidth="100" childWidth="fullWidth">

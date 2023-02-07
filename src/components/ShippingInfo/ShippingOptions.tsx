@@ -1,11 +1,11 @@
 import { Accordion, Alert, Card, FlexLayout, List, Modal, Switcher, TextStyles } from '@cedcommerce/ounce-ui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ShippingAttrib from './ShippingAttrib'
 import ShippingListOptions from './ShippingListOptions'
 
 interface DimensionDataType { [key: string]: { value: number | string, unit: string } }
 
-function ShippingOptions({ data, reference }: any) {
+function ShippingOptions({ data, reference, editedData, setEditedData }: any) {
   const wtOptions = ["lb", "kg", "oz", "gm"].map(d => { return { label: d, value: d } })
   const lenOptions = ["in", "cm", "mm"].map(d => { return { label: d, value: d } })
   const shippingAttributes = [
@@ -30,10 +30,21 @@ function ShippingOptions({ data, reference }: any) {
   const [variantCount, setVariantCount] = useState(0)
   const [listOptions, setListOptions] = useState(listOpt)
 
-  // console.log(dimensionData, "ddd");
   const scrollView = () => {
     reference.current.scrollIntoView({ behaviour: "smooth", align: "top" })
   }
+
+  useEffect(() => {
+    if (!isVariantChecked) {
+      setEditedData((prev: any) => {
+        return { ...prev, shippingInfo: { ...prev.shippingInfo, dimensionData } }
+      })
+    } else {
+      const { dimensionData, ...rest } = editedData.shippingInfo;
+      setEditedData(rest);
+    }
+  }, [isVariantChecked, dimensionData])
+
 
   return (
     <FlexLayout direction='vertical' desktopWidth='100' childWidth='fullWidth'>
@@ -79,7 +90,7 @@ function ShippingOptions({ data, reference }: any) {
       <Card cardType='Subdued'>
         <FlexLayout spacing='extraLoose' direction='vertical'>
           {Object.keys(listOptions).map((list: string, i: number) => {
-            return <ShippingListOptions key={i} listOptions={listOptions} objKey={list} setListOptions={setListOptions} />
+            return <ShippingListOptions key={i} listOptions={listOptions} objKey={list} setListOptions={setListOptions} editedData={editedData} setEditedData={setEditedData} />
           })}
         </FlexLayout>
       </Card>

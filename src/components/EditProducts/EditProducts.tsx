@@ -10,6 +10,7 @@ import ShippingInfo from '../ShippingInfo/ShippingInfo';
 import Variations from '../Variations/Variations';
 
 function EditProducts() {
+    const [editedData, setEditedData] = useState({});
     const { data } = useGetProducts("https://connector-dev.demo.cedcommerce.com/home-connector/public/connector/product/getProduct?container_id=7959922311392&source_marketplace=shopify&target_marketplace=michael&sourceShopID=86&targetShopID=93");
     const basicRef = useRef(null);
     const attributeRef = useRef(null);
@@ -22,6 +23,8 @@ function EditProducts() {
     const inViewPortImage = useIntersection(imageRef, "0px");
     const inViewPortShipping = useIntersection(shippingRef, "-0px");
     const inViewPortVariations = useIntersection(variationsRef, "0px");
+
+    console.log(editedData, "eee");
 
     const refObject: any = {
         "basic": basicRef,
@@ -72,15 +75,15 @@ function EditProducts() {
                 ]}
             >
                 <div className="wrapper" onScroll={handleScroll}>
-                    <div ref={basicRef}><BasicInfo data={data && data?.data?.rows} /></div>
+                    <div ref={basicRef}><BasicInfo data={data && data?.data?.rows} editedData={editedData} setEditedData={setEditedData} /></div>
                     <hr />
-                    <div ref={attributeRef}><AttributeMapping data={data && data?.data?.rows} /></div>
+                    <div ref={attributeRef}><AttributeMapping data={data && data?.data?.rows} editedData={editedData} setEditedData={setEditedData} /></div>
                     <hr />
-                    <div ref={imageRef}><ImagenVideo data={data && data?.data?.rows} /></div>
+                    <div ref={imageRef}><ImagenVideo data={data && data?.data?.rows} editedData={editedData} setEditedData={setEditedData} /></div>
                     <hr />
-                    <div ref={shippingRef}><ShippingInfo data={data && data?.data?.rows} reference={variationsRef} /></div>
+                    <div ref={shippingRef}><ShippingInfo data={data && data?.data?.rows} reference={variationsRef} editedData={editedData} setEditedData={setEditedData} /></div>
                     <hr />
-                    <div ref={variationsRef}><Variations data={data && data?.data?.rows} /></div>
+                    <div ref={variationsRef}><Variations data={data && data?.data?.rows} editedData={editedData} setEditedData={setEditedData} /></div>
                 </div>
             </Tabs>
 

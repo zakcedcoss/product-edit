@@ -2,7 +2,7 @@ import { Button, Card, FlexLayout, Radio, Tag, TextField, TextStyles, ToolTip } 
 import { useEffect, useState } from 'react'
 import { Info } from 'react-feather'
 
-function TagsInfo({ tags }: any) {
+function TagsInfo({ tags, basicInfoData, setBasicInfoData }: any) {
     const [originalAcceptedTags, setOriginalAcceptedTags] = useState<string[]>([]);
     const [editAcceptedTags, setEditAcceptedTags] = useState<string[]>([]);
     const [unAcceptedTags, setUnAcceptedTags] = useState<string[]>([])
@@ -20,6 +20,17 @@ function TagsInfo({ tags }: any) {
             setEditAcceptedTags(tags.slice(0, tags.length - 1))
         }
     }, [tags])
+
+    useEffect(() => {
+        if (tagVal === 1) {
+            const { tags, ...rest } = basicInfoData;
+            setBasicInfoData(rest);
+            return;
+        }
+        setBasicInfoData((prev: any) => {
+            return { ...prev, tags: tagVal === 1 ? originalAcceptedTags : editAcceptedTags }
+        })
+    }, [editAcceptedTags, tagVal])
 
     return (
         <FlexLayout direction="vertical" spacing="tight" desktopWidth='100'>

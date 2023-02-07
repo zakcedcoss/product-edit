@@ -1,10 +1,21 @@
 import { CheckBox, ChoiceList, FlexChild, FlexLayout, Select, TextStyles } from "@cedcommerce/ounce-ui"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RefreshCcw } from "react-feather"
 
-function VariationAttrSelect({ mappedData, required, displayName }: any) {
+function VariationAttrSelect({ mappedData, required, displayName, variantAttribData, setVariantAttribData }: any) {
     const options = mappedData.variant_attr;
     const [selectedVal, setSelectedVal] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (selectedVal.length !== 0) {
+            setVariantAttribData((prev: any) => {
+                return { ...prev, [displayName]: selectedVal }
+            })
+        } else {
+            const { [displayName]: _, ...rest } = variantAttribData;
+            setVariantAttribData(rest);
+        }
+    }, [selectedVal])
 
     return (
         <FlexLayout valign="center" halign="fill" desktopWidth="100" childWidth="fullWidth">

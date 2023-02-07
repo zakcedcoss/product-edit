@@ -1,11 +1,13 @@
 import { Accordion, Card, FlexLayout, TextStyles } from "@cedcommerce/ounce-ui"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "react-feather";
 import useGetProducts from "../../requests/useGetProducts"
 import AttribSelect from "./AttribSelect";
 import VariationAttrSelect from "./VariationAttrSelect";
 
-function EditAttributes({ category_settings }: any) {
+function EditAttributes({ category_settings, attributeMappingData, setAttributeMappingData }: any) {
+    const [productAttribData, setProductAttribData] = useState({});
+    const [variantAttribData, setVariantAttribData] = useState({});
     const [openProductAttrib, setOpenProductAttrib] = useState(false);
     const [openVariationAttrib, setOpenVariationAttrib] = useState(false);
     const { data: mappedData } = useGetProducts("https://connector-dev.demo.cedcommerce.com/home-connector/public/michaelhome/profile/getMappingAttributes");
@@ -18,6 +20,13 @@ function EditAttributes({ category_settings }: any) {
         return attr.variation;
     })
 
+    useEffect(() => {
+        setAttributeMappingData((prev: any) => {
+            return { ...prev, productAttribData, variantAttribData }
+        })
+
+    }, [productAttribData, variantAttribData])
+
     return (
         <>
             {isLoading ?
@@ -27,7 +36,7 @@ function EditAttributes({ category_settings }: any) {
                     </FlexLayout>
                 </Card>
                 : <Card cardType="Plain">
-                    {/* on Close on accordion : one opens another closes */}
+                    {/* on Close accordion : one opens another closes */}
                     <Accordion active={openProductAttrib} boxed onClick={() => setOpenProductAttrib(prev => !prev)} title="Product Attributes">
                         <FlexLayout direction="vertical" spacing="tight">
                             <FlexLayout spacing="tight" halign="fill" valign="center">
@@ -36,7 +45,7 @@ function EditAttributes({ category_settings }: any) {
                             </FlexLayout>
                             <FlexLayout spacing="tight" direction="vertical">
                                 {productAttrib && productAttrib.map((prodAttr: any, i: number) => {
-                                    return <AttribSelect key={i} mappedData={mappedData?.data} {...prodAttr} />
+                                    return <AttribSelect key={i} mappedData={mappedData?.data} {...prodAttr} productAttribData={productAttribData} setProductAttribData={setProductAttribData} />
                                 })}
                             </FlexLayout>
                         </FlexLayout>
@@ -49,12 +58,13 @@ function EditAttributes({ category_settings }: any) {
                             </FlexLayout>
                             <FlexLayout spacing="tight" direction="vertical">
                                 {variationsAttrib && variationsAttrib.map((prodAttr: any, i: number) => {
-                                    return <VariationAttrSelect key={i} mappedData={mappedData?.data} {...prodAttr} />
+                                    return <VariationAttrSelect key={i} mappedData={mappedData?.data} {...prodAttr} variantAttribData={variantAttribData} setVariantAttribData={setVariantAttribData} />
                                 })}
                             </FlexLayout>
                         </FlexLayout>
                     </Accordion>}
-                </Card>}
+                </Card>
+            }
         </>
     )
 }

@@ -6,7 +6,7 @@ import { ContentState, convertToRaw, EditorState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
-function CheckOptions({ title, row, objKey }: any) {
+function CheckOptions({ title, row, objKey, basicInfoData, setBasicInfoData }: any) {
     const [originalData, setOriginalData] = useState("");
     const [value, setValue] = useState(1)
     const [text, setText] = useState<string>("")
@@ -23,6 +23,18 @@ function CheckOptions({ title, row, objKey }: any) {
         );
         return EditorState.createWithContent(contentState);
     };
+
+    useEffect(() => {
+        if (value === 1) {
+            const { [title]: _, ...rest } = basicInfoData;
+            setBasicInfoData(rest);
+            return;
+        }
+        setBasicInfoData((prev: any) => {
+            return { ...prev, [title]: value === 1 ? originalData : text }
+        })
+    }, [value, text])
+
 
     useEffect(() => {
         if (row) {

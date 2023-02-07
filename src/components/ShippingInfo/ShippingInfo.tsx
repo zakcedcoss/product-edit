@@ -1,10 +1,17 @@
 import { Card, FlexLayout, List, Modal, Switcher, TextStyles } from "@cedcommerce/ounce-ui"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShippingOptions from "./ShippingOptions";
 
-function ShippingInfo({ data, reference }: any) {
+function ShippingInfo({ data, reference, editedData, setEditedData }: any) {
     const [isChecked, setIsChecked] = useState(false);
     const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        if (!isChecked) {
+            const { shippingInfo, ...rest } = editedData;
+            setEditedData(rest);
+        }
+    }, [isChecked])
 
     return (
         <Card cardType="Subdued" title="Shipping Information">
@@ -26,7 +33,7 @@ function ShippingInfo({ data, reference }: any) {
                         <TextStyles type="Display" fontweight="light">Enable this to set product specific shipping info. Disable this to use shipping info from profile.</TextStyles>
                     </FlexLayout>
                 </Card>
-                {isChecked && <ShippingOptions data={data} reference={reference} />}
+                {isChecked && <ShippingOptions data={data} reference={reference} editedData={editedData} setEditedData={setEditedData} />}
             </FlexLayout>
             <Modal open={count > 0 && count % 2 === 0}
                 close={() => {

@@ -10,7 +10,7 @@ interface ImageLinkType {
     content: string
 }
 
-function ImageComponent({ data }: any) {
+function ImageComponent({ data, editedData, setEditedData }: any) {
     const [unsortedImagesLink, setUnsortedImagesLink] = useState<ImageLinkType[]>([])
     const [imagesLink, setImagesLink] = useState<ImageLinkType[]>([])
     // console.log(imagesLink, "links");
@@ -18,6 +18,12 @@ function ImageComponent({ data }: any) {
     const [isHelpAccordianOpen, setIsHelpAccordianOpen] = useState(false);
     const [fetchImageLink, setFetchImageLink] = useState("");
     const [errorMessage, setErrorMessage] = useState("")
+
+    useEffect(() => {
+        setEditedData((prev: any) => {
+            return { ...prev, imagesLink }
+        })
+    }, [imagesLink])
 
     useEffect(() => {
         const allImagesLink = data?.map((d: any) => {

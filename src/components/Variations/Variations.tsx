@@ -2,7 +2,7 @@ import { Button, Card, CheckBox, FlexLayout, Grid, Modal, Switcher, TextField, T
 import { useEffect, useState } from "react"
 import { Check, Edit2, Info, RefreshCcw } from "react-feather"
 
-function Variations({ data }: any) {
+function Variations({ data, editedData, setEditedData }: any) {
     const dataSource = data && data?.slice(1)?.map((d: any) => {
         return {
             key: d.edited.source_product_id ?? d.source_product_id,
